@@ -1,0 +1,56 @@
+server:
+  address: 0.0.0.0
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: springboot-rag-chatbot
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+    open-in-view: false
+  mvc:
+    async:
+      request-timeout: 300000
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+rag:
+  chunk-size: 900
+  chunk-overlap: 150
+  default-top-k: 5
+  max-context-chars: 7000
+  min-relevance-score: 0.15
+
+embedding:
+  dimension: 384
+  model: text-embedding-3-small
+
+vector:
+  file-path: ${VECTOR_FILE_PATH:./data/vectors.json}
+
+openrouter:
+  base-url: https://openrouter.ai/api/v1
+  api-key: ${OPENROUTER_API_KEY:}
+  model: openai/gpt-4o-mini
+  temperature: 0.1
+  timeout-seconds: 60
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: 86400000

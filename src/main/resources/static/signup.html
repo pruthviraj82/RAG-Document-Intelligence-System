@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create account · DocuMind</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-body">
+<div class="auth-card">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    DocuMind
+  </div>
+  <h1>Create your account</h1>
+  <p class="sub">Upload PDFs and get answers with sources.</p>
+  <div class="error-msg" id="errorMsg" role="alert"></div>
+  <form id="signupForm">
+    <div class="field"><label for="name">Name</label><input type="text" id="name" required></div>
+    <div class="field"><label for="email">Email</label><input type="email" id="email" placeholder="you@example.com" required></div>
+    <div class="field"><label for="password">Password</label><input type="password" id="password" minlength="6" required></div>
+    <button type="submit" class="btn-primary" id="signupBtn">Create account</button>
+  </form>
+  <div class="auth-footer">Already registered? <a href="/login.html">Sign in</a></div>
+</div>
+<script>
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('signupBtn'), errorEl = document.getElementById('errorMsg');
+  btn.disabled = true; errorEl.classList.remove('show');
+  const body = { email: email.value, password: password.value };
+  if (document.getElementById('name')) body.name = document.getElementById('name').value;
+  try {
+    const res = await fetch('/api/auth/signup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    if (!res.ok) { let m='Request failed'; try { m=(await res.json()).message||m; } catch(_){} throw new Error(m); }
+    const data = await res.json();
+    localStorage.setItem('rag_chatbot_token', data.token);
+    localStorage.setItem('rag_chatbot_user', JSON.stringify({ email: data.email, name: data.name || '' }));
+    window.location.href = '/';
+  } catch (err) { errorEl.textContent = err.message; errorEl.classList.add('show'); }
+  finally { btn.disabled = false; }
+});
+</script>
+</body>
+</html>

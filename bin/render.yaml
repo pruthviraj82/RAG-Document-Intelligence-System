@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: rag-documind
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: MONGO_URI
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: VECTOR_FILE_PATH
+        value: /data/vectors.json
+      - key: PORT
+        sync: false
